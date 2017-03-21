@@ -1,0 +1,20 @@
+body{
+    margin:0;
+   padding:0;background: #f8f8f8;
+     height:100%;
+background: #fff;
+}
+#top-nav li{
+    
+    border-left:1px solid #eeeeee; 
+    
+}
+#footer{
+    background: #eeeeee;
+    overflow: auto;
+    margin-top: 20px;
+    min-height: 50px;
+}
+.navbar-default{
+    background: #f8f8f8;
+}
