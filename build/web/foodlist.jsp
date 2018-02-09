@@ -4,9 +4,13 @@
     Author     : Ola
 --%>
 
+<%@page import="iEatPackage.model.User"%>
 <%@page import="java.util.List"%>
 <%@page import="iEatPackage.model.Food"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+    <%
+        User user = (User) session.getAttribute("user"); 
+    %>
 <!DOCTYPE html>
 <html>
     <jsp:include page="/template_parts/head.jsp" />
@@ -14,14 +18,21 @@
 </head>
 <a href="LoginServlet.do"></a>
 <body>
-    <jsp:include page="/template_parts/menu.jsp" />
+      <%
+        if (user.getUsertype().equals(("admin").toLowerCase())) {  %>
+        <jsp:include page="/template_parts/menu_admin.jsp" />
+        <%
+        } else {
+        %>    
+        <jsp:include page="/template_parts/menu.jsp" />
+        <% } %>
     <div class="container">
-        <jsp:include page="/template_parts/dash_nav.jsp" />
+     
 
         <nav class="navbar navbar-default">
             <ul class="nav navbar-nav">
-                <li><a href="ListAllFoodServlet.do" ><i class="fa fa-search"></i> Search Food</a></li>
-                <li><a href="MealsServlet.do"  >  Meals</a></li>
+                <li class="active"><a href="ListAllFoodServlet.do" ><i class="fa fa-search"></i> Food</a></li>
+                <li><a href="ListAllMealsServlet.do" >  Meals</a></li>
             </ul>
         </nav>
 
@@ -46,7 +57,6 @@
                 <tbody>
 
                     <%
-
                         List<Food> listOfAllFood = (List) request.getAttribute("listOfAllFood");
 
                         for (Food f : listOfAllFood) {
@@ -68,7 +78,7 @@
 
                                     <div>Serving selection</div>
                                     
-                                    <p><input id="<%=f.getId()%>serving" type="number" name="serving" min="0" max="200" step="1" value="1"> <%=f.getServingSize()%></p>
+                                    <p><input id="<%=f.getId()%>serving" type="number" name="serving" min="1" max="200" step="1" value="1" required pattern="^[0-9]{1,4}\.[0-9]{1,2}"> <%=f.getServingSize()%></p>
                                     <div>Fats: <span id="<%=f.getId()%>fatsfield"><%=f.getFats()%></span>g | 
                                         Carbohydrates: <span id="<%=f.getId()%>carbsfield"><%=f.getCarbs()%></span>g | 
                                         Proteins: <span id="<%=f.getId()%>proteinsfield"><%=f.getProteins()%></span>g 
@@ -89,7 +99,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                    <input type="submit" class="btn btn-primary" value="Add">
+                                    <input type="submit" class="btn btn-primary" value="Add food to your day ">
                                 </div>
 
                             </form>
@@ -100,7 +110,7 @@
 
                 <tr> <td class="text-left"><%=f.getName()%> (<%=(f.getServingSize())%>)</td>
                     <td class="text-right"><a data-toggle="modal" data-target="#<%=f.getId()%>food">
-                            <i class="fa fa-plus" aria-hidden="true"></i></a></td></tr>
+                            <i class="fa fa-plus" aria-hidden="true"></i> Add</a></td></tr>
                             <%
                                 }
 

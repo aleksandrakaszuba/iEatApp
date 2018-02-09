@@ -11,20 +11,10 @@
 <%@page import = "iEatPackage.model.*" %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%
-    /* if ((session.getAttribute("email") == null) || (session.getAttribute("email") == "")) {
-        response.sendRedirect("login.jsp");
-    } else if ((session.getAttribute("email") != null) || (session.getAttribute("profile") == "incomplete")) {
-        response.sendRedirect("userdataform.jsp");
-    }*/
-    
-    User user = (User)session.getAttribute("user");
-
-    out.println("<p> session time atr:" + session.getCreationTime() + "</p>");
-    out.println("<p>session all atr:" + session.getAttributeNames() + "</p>");
-    out.println("<p>session email atr:" + user.getName() + "</p>"); 
-%>
-%>
+  <%
+        User user = (User) session.getAttribute("user");
+       
+    %>
 <!DOCTYPE html>
 <html>
     <jsp:include page="/template_parts/head.jsp" />
@@ -32,7 +22,14 @@
 </head>
 <body>
    
-    <jsp:include page="/template_parts/menu.jsp" />
+       <%
+        if (user.getUsertype().equals(("admin").toLowerCase())) {  %>
+        <jsp:include page="/template_parts/menu_admin.jsp" />
+        <%
+        } else {
+        %>    
+        <jsp:include page="/template_parts/menu.jsp" />
+        <% } %>
     <div class="container">
       
   
@@ -41,20 +38,20 @@
 
         <form action="MyAccount.do" id="userdataform"  class="form-horizontal">
             <div class="form-group">
-            <label class="col-sm-3" for="userweight" class="sr-only"  >Your Name</label>
-            <input class="col-sm-9"  type="text" name="username" class="form-control" value="<%=user.getName() %>" autofocus="">
+            <label class="col-sm-3" for="username" class="sr-only"  >Your Name</label>
+            <input class="col-sm-9"  type="text" name="username" class="form-control" value="<%=user.getName() %>" autofocus="" required pattern="^[^-\s][a-zA-Z0-9 ]{1,20}">
             </div>
              <div class="form-group">
             <label class="col-sm-3" for="currentweight" class="sr-only"  >Your Weight (kg)</label>
-            <input class="col-sm-9" type="text" name="userweight" id="userweight" class="form-control" placeholder="Your weight (kg)" value="<%=user.getWeight() %>" autofocus="">
+            <input class="col-sm-9" type="number" name="userweight" id="userweight" class="form-control" required placeholder="Your weight (kg)" value="<%=user.getWeight() %>" autofocus=""  min="30" max="350" step="1" pattern="^[^-\s\.][0-9\.]{1,20}">
              </div>
               <div class="form-group">
             <label class="col-sm-3"  for="userheight" class="sr-only" >Your Height (cm)</label>
-            <input class="col-sm-9" type="text" name="userheight" id="userheight" class="form-control" value="<%=user.getHeight() %>" placeholder="Your height (cm) "  >
+            <input class="col-sm-9" type="number" name="userheight" id="userheight" class="form-control" required value="<%=user.getHeight() %>" placeholder="Your height (cm) " min="100" max="250" step="1"  pattern="^[^-\s\.][0-9.\]{1,20}" >
               </div>
             <div class="form-group">
             <label class="col-sm-3" for="userage" class="sr-only">Age (years)</label>
-            <input class="col-sm-9" type="text" name="userage" id="userheight" class="form-control" value="<%=user.getAge() %>" placeholder="Your age (years) "  >
+            <input class="col-sm-9" type="number" name="userage" id="userheight" class="form-control" required value="<%=user.getAge() %>" placeholder="Your age (years) " min="14" max="100" step="1"   pattern="^[^-\s0\.][0-9\.]{1,20}" >
             </div>
              <div class="form-group">
                     <label class="col-sm-12" for="usergender" >Gender</label><br>

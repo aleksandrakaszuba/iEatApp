@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
  * @author Ola
  */
 public class UserAdvancedDataServlet extends HttpServlet {
-    
+
     private UserDao userDao = UserDaoInMemoryImpl.instance();
     private CaloriesCalculator c = new CaloriesCalculator();
 
@@ -38,35 +38,33 @@ public class UserAdvancedDataServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            response.setContentType("text/html;charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                User user = (User) session.getAttribute("user");
-                if (user == null) {
-                    // ToDo
-                    // do logowania
-                } else {
-                    user.setName(validate(request.getParameter("username")));
-                    user.setWeight(Double.parseDouble(validate(request.getParameter("userweight"))));
-                    user.setHeight(Double.parseDouble(validate(request.getParameter("userheight"))));
-                    user.setAge(Integer.parseInt(validate(request.getParameter("userage"))));
-                    user.setGender(validate(request.getParameter("usergender")));
-                    user.setPlan(Integer.parseInt(validate(request.getParameter("weightlostspeed"))));
-                }
-                request.setAttribute("dailyCaloriesAllowance", c.calculateCaloriesPerDay(user));
-                RequestDispatcher view = request.getRequestDispatcher("myday.jsp");
-                view.forward(request,response);
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            User user = (User) session.getAttribute("user"); 
+            if (user == null) {
+                 response.sendRedirect("login.jsp");   
             } else { 
-                response.sendRedirect("login.jsp");
-            }        
+                user.setName(userDao.validate(request.getParameter("username")));
+                user.setWeight(Double.parseDouble(userDao.validate(request.getParameter("userweight"))));
+                user.setHeight(Double.parseDouble(userDao.validate(request.getParameter("userheight"))));
+                user.setAge(Integer.parseInt(userDao.validate(request.getParameter("userage"))));
+                user.setGender(request.getParameter("usergender"));
+                user.setPlan(Integer.parseInt(userDao.validate(request.getParameter("weightlostspeed"))));
+  
+                
+                request.setAttribute("dailyCaloriesAllowance", c.calculateCaloriesPerDay(user));
+                RequestDispatcher view = request.getRequestDispatcher("MyDayServlet.do");
+                view.forward(request, response);
+            }
+
+        } else {
+            response.sendRedirect("login.jsp");
+        }
     }
-    
-    private String validate(String s) {
-        //ToDo
-        return s;
-    }
+ 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

@@ -40,6 +40,11 @@ public class User {
         this.email = email;
         this.password = password;
     }
+     public User(String email, String password, String usertype) {
+        this.email = email;
+        this.password = password;
+         this.usertype = usertype;
+    }
 
     public String getEmail() {
         return email;
@@ -93,7 +98,7 @@ public class User {
         this.usertype = usertype;
     }
 
-    public void setGender(String name) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 

@@ -3,59 +3,49 @@
     Created on : 6-Mar-2017, 7:50:24 PM
     Author     : Ola
 --%>
+<%@page import="iEatPackage.model.User"%>
 <%@page import = "java.sql.*" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    if (session != null) {
+
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            // out.println("<p> session time atr:" + session.getCreationTime() + "</p>");
+        } else {
+            //user and session exists
+            response.sendRedirect("MyDayServlet.do");
+        }
+    }
+
+%>
 <!DOCTYPE html>
 <html>
-    <jsp:include page="/template_parts/head.jsp" />
-    <title>iEat App</title>
-</head>
-<body>
-    <jsp:include page="/template_parts/menu.jsp" />
-    <div class="container">
-        <h1>Welcome to iEat</h1>
-        <p class="lead">Start your journey to healthier eating</p>
-       
-         
-              
-            <hr class="half-rule"> 
-            <div class="row bs-docs-featured-sites"> <div class="col-xs-6 col-sm-3"> 
-                    <a href="http://expo.getbootstrap.com/2014/10/29/lyft/" target="_blank" title="Lyft"> 
-                       
-                    </a> 
-                </div> 
-                <div class="col-xs-6 col-sm-3"> 
-                    <a href="http://expo.getbootstrap.com/2014/09/30/vogue/" target="_blank" title="Vogue"> 
-                        
-                    </a> 
-                </div> 
-                <div class="col-xs-6 col-sm-3"> <a href="http://expo.getbootstrap.com/2014/03/13/riot-design/" target="_blank" title="Riot Design"> 
-                         
-                    </a> 
-                </div> <div class="col-xs-6 col-sm-3"> 
-                    <a href="http://expo.getbootstrap.com/2014/02/12/newsweek/" target="_blank" title="Newsweek"> 
-                        
-                    </a> 
-               
-            </div> <hr class="half-rule"> 
-            <p class="lead">Lorem ipsum</p> 
-            <a href="register.jsp" class="btn btn-lg btn-primary ">Get started</a> 
-        </div>
-        <ul>
-            <%
-                Connection c = DriverManager.getConnection("jdbc:derby://localhost:1527/ieat_users.db", "ieat", "codeislife");
-                Statement s = c.createStatement();
-                String query = "SELECT * FROM USERS";
-                ResultSet result = s.executeQuery(query);
-                while (result.next()) {
-            %>
-            <!-- <li><%= result.getString("name")%>
-             </li> --><%
-                 }
-                 c.close();
-            %>
+    <head>
+        <jsp:include page="/template_parts/head.jsp" />
+        <title>iEat App</title>
+    </head>
 
-    </div>
-</ul>
-</body>
+    <body id="home" >
+        <jsp:include page="/template_parts/menu_general.jsp" />
+        <div  >
+
+            <div class="container" >
+                <div style=" text-shadow: 1">
+                    <h1 style="color:white" class="text-shadow">Welcome to <span style="color:orange">iEat</span></h1>
+                    <h3 style="color:white; "class=" text-shadow"><span>Start your journey to healthier eating</span></h3>
+                    <br>
+                    <p style="color:white"  class="lead text-shadow bullet"><i class="fa fa-check-circle " aria-hidden="true"></i>  Determine your daily caloric needs</p> 
+                    <p style="color:white"  class="lead text-shadow bullet"><i class="fa fa-check-circle  " aria-hidden="true"></i>  Log your meals and track your calorie intake</p> 
+                    <p style="color:white"  class="lead text-shadow bullet"><i class="fa fa-check-circle  " aria-hidden="true"></i>  Save your favorite meals</p> 
+                    <p style="color:white"  class="lead text-shadow bullet"><i class="fa fa-check-circle  " aria-hidden="true"></i>  Tracks your progress towards your goals</p>           
+                    <a href="register.jsp" class="btn btn-lg btn-primary " style="margin:30px 0px ; background: #7db965; padding: 11px 29px;
+                       font-size: 21px;">Get started</a> 
+                </div>
+            </div>
+        </div>
+
+
+
+    </body>
 </html>

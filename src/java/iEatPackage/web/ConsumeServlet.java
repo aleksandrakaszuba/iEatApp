@@ -6,7 +6,7 @@
 package iEatPackage.web;
 
 import iEatPackage.model.Food;
-import iEatPackage.model.QuantifiedFood;
+import iEatPackage.model.ConsumedFood;
 import iEatPackage.model.User;
 import iEatPackage.model.UserDao;
 import iEatPackage.model.UserDaoInMemoryImpl;
@@ -42,28 +42,44 @@ public class ConsumeServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            int quantity = Integer.parseInt(validate(request.getParameter("serving")));
-            String foodName = validate(request.getParameter("foodName"));
+
             HttpSession session = request.getSession(false);
             if (session != null) {
                 User user = (User) session.getAttribute("user");
                 if (user == null) {
-                    // ToDo
                     response.sendRedirect("login.jsp");
                 } else {
 
-                    userDao.consume(user, foodName, quantity, LocalDate.now());
-                    List<QuantifiedFood> listOfConsumedFood = userDao.getFoodByDate(user, LocalDate.now());
+                   
+                    
+                    if ((user.getUsertype().equals(("Admin").toLowerCase()))) {
 
-                    request.setAttribute("listOfConsumedFood", listOfConsumedFood);
-                    RequestDispatcher view = request.getRequestDispatcher("daylog.jsp");
-                    view.forward(request, response);
+                        RequestDispatcher view = request.getRequestDispatcher("ListAllFoodServlet.do");
+                        view.forward(request, response);
+                    } else if (!userDataCompleted(user) && (user.getUsertype().equals(("Basic").toLowerCase()))) {
+                        //out.println("form");
+                        RequestDispatcher view = request.getRequestDispatcher("userdataform.jsp");
+                        view.forward(request, response);
+                    } else {
+                        // user completed the form and calories allowance was calculated
+                        int quantity = Integer.parseInt(userDao.validate(request.getParameter("serving")));
+                        String foodName = userDao.validate(request.getParameter("foodName"));
+                        userDao.consume(user, foodName, quantity, LocalDate.now());
+                        List<ConsumedFood> listOfConsumedFood = userDao.getFoodByDate(user, LocalDate.now());
+
+                        request.setAttribute("listOfConsumedFood", listOfConsumedFood);
+                          
+                        RequestDispatcher view = request.getRequestDispatcher("ListUserFoodHistory.do");
+                        view.forward(request, response);
+                    }
+
                 }
+
             } else {
                 response.sendRedirect("login.jsp");
             }
-            /* TODO output your page here. You may use following sample code. */
 
+            /* TODO output your page here. You may use following sample code. */
         }
     }
 
@@ -109,6 +125,15 @@ public class ConsumeServlet extends HttpServlet {
     private String validate(String s) {
         //ToDo
         return s;
+    }
+
+    public boolean userDataCompleted(User user) {
+
+        if (user.getHeight() == 0
+                || user.getWeight() == 0) {
+            return false;
+        }
+        return true;
     }
 
 }

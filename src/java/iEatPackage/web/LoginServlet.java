@@ -6,7 +6,7 @@
 package iEatPackage.web;
 
 import iEatPackage.model.CaloriesCalculator;
-import iEatPackage.model.QuantifiedFood;
+import iEatPackage.model.ConsumedFood;
 import iEatPackage.model.UserDaoInMemoryImpl;
 import iEatPackage.model.User;
 import iEatPackage.model.UserDao;
@@ -27,9 +27,10 @@ import javax.servlet.http.HttpSession;
  * @author Ola
  */
 public class LoginServlet extends HttpServlet {
-    
-     private UserDao userDao = UserDaoInMemoryImpl.instance();
-     private CaloriesCalculator c = new CaloriesCalculator();
+
+    private UserDao userDao = UserDaoInMemoryImpl.instance();
+    private CaloriesCalculator c = new CaloriesCalculator();
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -46,40 +47,38 @@ public class LoginServlet extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             String email = request.getParameter("username");
             String password = request.getParameter("password");
-            
+
             User user = userDao.getUser(email);
             if (user == null) {
                 request.setAttribute("errormessage", "User does not exist");
                 RequestDispatcher view = request.getRequestDispatcher("login.jsp");
                 view.forward(request, response);
-            }
-            else if (password != null && !password.equals(user.getPassword())) { 
-                request.setAttribute("errormessage", "Invalid credentials " + password + " != " + user.getPassword());
+            } else if (password != null && !password.equals(user.getPassword())) {
+                request.setAttribute("errormessage", "Invalid credentials ");
                 RequestDispatcher view = request.getRequestDispatcher("login.jsp");
                 view.forward(request, response);
             } else {
-            
                 HttpSession session = request.getSession();
-                session.setAttribute("user", user);
-                 if(user.getUsertype().toLowerCase().equals(("Admin").toLowerCase())){
-                 RequestDispatcher view = request.getRequestDispatcher("ListAllFoodServlet.do");
+                session.setAttribute("user", user);      
+                if ((user.getUsertype().equals(("Admin").toLowerCase()))) {
+                    RequestDispatcher view = request.getRequestDispatcher("dashboard_admin.jsp");
                     view.forward(request, response);
-                 
-                 }
-                 else{
-                if (!userDataCompleted(user)) {
+                } else if (!userDao.userDataCompleted(user)) {
+                    // user didn't complete advanced form
                     RequestDispatcher view = request.getRequestDispatcher("userdataform.jsp");
                     view.forward(request, response);
                 } else {
-                    List<QuantifiedFood> listOfConsumedFood  = userDao.getFoodByDate(user, LocalDate.now());
-                    request.setAttribute("listOfConsumedFood", listOfConsumedFood);  
-                    request.setAttribute("dailyCaloriesAllowance", c.calculateCaloriesPerDay(user));
-                    RequestDispatcher view = request.getRequestDispatcher("myday.jsp");
+                    // user completed the form and calories allowance was calculated
+
+                    request.setAttribute("dailyCaloriesAllowance", c.calculateCaloriesPerDay(user)); 
+                    out.println(c.calculateCaloriesPerDay(user));
+                    RequestDispatcher view = request.getRequestDispatcher("MyDayServlet.do");
                     view.forward(request, response);
                 }
-                 }
+                out.println("not completed");
+
             }
- 
+
         }
 
     }
@@ -123,16 +122,6 @@ public class LoginServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public boolean userDataCompleted(User user) {
-
-        if (    
-                user.getHeight() == 0
-                || user.getWeight() == 0
-                
-            ) {
-            return false;
-        }
-        return true;
-    }
+ 
 
 }

@@ -6,13 +6,12 @@
 package iEatPackage.web;
 
 import iEatPackage.model.Food;
-import iEatPackage.model.QuantifiedFood;
 import iEatPackage.model.User;
 import iEatPackage.model.UserDao;
 import iEatPackage.model.UserDaoInMemoryImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -26,6 +25,7 @@ import javax.servlet.http.HttpSession;
  * @author Ola
  */
 public class ManageFoodServlet extends HttpServlet {
+
     private UserDao userDao = UserDaoInMemoryImpl.instance();
 
     /**
@@ -42,20 +42,23 @@ public class ManageFoodServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String foodName = request.getParameter("foodName");
-            String newFoodName = request.getParameter("newFoodName");
-            int id = Integer.parseInt(validate(request.getParameter("id"))) ;
-            int calories = Integer.parseInt(validate(request.getParameter("calories"))) ;
-            String servingSize =  validate(request.getParameter("serving") ) ;
-            double carbs = Double.parseDouble(validate(request.getParameter("carbs"))) ;
-            double fats = Double.parseDouble(validate(request.getParameter("fats"))) ;
-            double proteins = Double.parseDouble(validate(request.getParameter("proteins"))) ;
+
+            List<Food> listOfAllFood = userDao.getAllFoods();
+            double calories, carbs, fats, proteins = 0;
+            int id;
+            String create = userDao.validate(request.getParameter("create"));
+            String foodName = userDao.validate(request.getParameter("foodName"));
+            String newFoodName = userDao.validate(request.getParameter("newFoodName"));
+            String servingSize = userDao.validate(request.getParameter("serving"));
+            id = Integer.parseInt(userDao.validate(request.getParameter("id")));
+            calories = Double.parseDouble(userDao.validate(request.getParameter("calories")));
+            carbs = Double.parseDouble(userDao.validate(request.getParameter("carbs")));
+            fats = Double.parseDouble(userDao.validate(request.getParameter("fats")));
+            proteins = Double.parseDouble(userDao.validate(request.getParameter("proteins")));
+
             boolean found = false;
-            
-    
-            List<Food> listOfAllFood = userDao.getAllFoods() ;
-            request.setAttribute("listOfAllFood", listOfAllFood);
-            
+            int duplicate = 0;
+
             HttpSession session = request.getSession(false);
             if (session != null) {
                 User user = (User) session.getAttribute("user");
@@ -63,29 +66,51 @@ public class ManageFoodServlet extends HttpServlet {
                     // ToDo
                     response.sendRedirect("login.jsp");
                 } else {
-                    out.println("sth");
-                   // for(Food f : listOfAllFood){
-                    //    if(  f.getName().equals(foodName)){
-                         //   f = new Food().withId(id).withName(newFoodName).withCalories(calories).withCarbs(carbs).withProteins(proteins).withFats(fats).withServingSize(servingSize);
-                       //     found=true;
-                      //  } 
-                   // }
-                   // if(found==true){
-                    //  userDao.updateFood( foodName, new Food().withId(id).withName(newFoodName).withCalories(calories).withCarbs(carbs).withProteins(proteins).withFats(fats).withServingSize(servingSize));
- 
-                   // }
-                    
-                   // if(found==false){ 
-                        userDao.createFood(new Food().withId(listOfAllFood.size()).withName(foodName).withCalories(calories).withCarbs(carbs).withProteins(proteins).withFats(fats).withServingSize(servingSize));
-                //   }
-                    //request.setAttribute("listOfAllFood", listOfAllFood);
-                  //  RequestDispatcher view = request.getRequestDispatcher("managefood.jsp");
-                   // view.forward(request, response);
+                    List<Food> dfl = new LinkedList<>();
+                    for (Food f : listOfAllFood) {
+                        if ((f.getName().toLowerCase()).equals(foodName.toLowerCase())) {
+                            duplicate += 1;
+                            found = true;
+                           //  dfl.add(f);
+
+                        }
+                    }
+                    if (found == true & create.equals("true")) {
+                        request.setAttribute("errormessage", "Food name already exists" );
+                        listOfAllFood = userDao.getAllFoods();
+                        request.setAttribute("listOfAllFood", listOfAllFood);
+                        RequestDispatcher view = request.getRequestDispatcher("managefood.jsp");
+                        view.forward(request, response);
+                        
+                    } else if (found == true) {
+                        for (Food f : listOfAllFood) {
+                            if (f.getName().equals(foodName) & f.getId() == id) {
+                                f.setCalories((int) calories);
+                                f.setServingSize(servingSize);
+                                f.setProteins(proteins);
+                                f.setCarbs(carbs);
+                                f.setFats(fats);
+                                request.setAttribute("successmessage", "Food updated" );
+                            }
+
+                        }
+                    } else if (found == false) {
+                        userDao.createFood(new Food().withId(listOfAllFood.size()).withName(foodName).withCalories((int) calories).withCarbs(carbs).withProteins(proteins).withFats(fats).withServingSize(servingSize));
+                        request.setAttribute("successmessage", "Food created");
+                    }
+
+                    listOfAllFood = userDao.getAllFoods();
+                    request.setAttribute("listOfAllFood", listOfAllFood);
+                    RequestDispatcher view = request.getRequestDispatcher("managefood.jsp");
+                    view.forward(request, response);
+
                 }
             } else {
                 response.sendRedirect("login.jsp");
             }
+
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -127,8 +152,7 @@ public class ManageFoodServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private String validate(String parameter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private String validate(String s) {
+        return s;
     }
-
 }

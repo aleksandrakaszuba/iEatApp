@@ -36,6 +36,22 @@
         <servlet-name>UserAdvancedDataServlet</servlet-name>
         <servlet-class>iEatPackage.web.UserAdvancedDataServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MealsServlet</servlet-name>
+        <servlet-class>iEatPackage.web.MealsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListAllMealsServlet</servlet-name>
+        <servlet-class>iEatPackage.web.ListAllMealsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateNewMealServlet</servlet-name>
+        <servlet-class>iEatPackage.web.CreateNewMealServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListAllFoodForMeals</servlet-name>
+        <servlet-class>iEatPackage.web.ListAllFoodForMeals</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UserAdvancedDataServlet</servlet-name>
         <url-pattern>/UserAdvancedDataServlet.do</url-pattern>
@@ -47,6 +63,10 @@
     <servlet>
         <servlet-name>ConsumeServlet</servlet-name>
         <servlet-class>iEatPackage.web.ConsumeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ConsumeMealServlet</servlet-name>
+        <servlet-class>iEatPackage.web.ConsumeMealServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ManageFoodServlet</servlet-name>
@@ -89,12 +109,32 @@
         <url-pattern>/ConsumeServlet.do</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>ConsumeMealServlet</servlet-name>
+        <url-pattern>/ConsumeMealServlet.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>ManageFoodServlet</servlet-name>
         <url-pattern>/ManageFoodServlet.do</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MealsServlet</servlet-name>
+        <url-pattern>/MealsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListAllMealsServlet</servlet-name>
+        <url-pattern>/ListAllMealsServlet.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateNewMealServlet</servlet-name>
+        <url-pattern>/CreateNewMealServlet.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListAllFoodForMeals</servlet-name>
+        <url-pattern>/ListAllFoodForMeals.do</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
-            15
+            60
         </session-timeout>
     </session-config>
 </web-app>

@@ -5,61 +5,37 @@
  */
 package iEatPackage.model;
 
-import java.time.LocalDate;
-
 /**
  *
  * @author Ola
  */
 public class QuantifiedFood {
-    private Food food;
-    private int quantity;
-    private LocalDate date;
+    protected Food food;
+    protected int quantity;
     
     public QuantifiedFood() {}
     
-    public QuantifiedFood(Food food, int quantity, LocalDate date){
-        this.food = food;
-        this.quantity = quantity;
-        this.date = date;
-    }
-    
-    public QuantifiedFood withFood(Food food) {
-        this.food = food;
-        return this;
-    }
-    
-    public QuantifiedFood withQuantity(int quantity) {
-        this.quantity = quantity;
-        return this;
-    }
-        
-    public QuantifiedFood withDate(LocalDate date) {
-        this.date = date;
-        return this;
-    }
-
-    public Food getFood() {
-        return food;
+    public QuantifiedFood(Food f, int q) {
+        this.food = f;
+        this.quantity = q;
     }
 
     public void setFood(Food food) {
         this.food = food;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public Food getFood() {
+        return food;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public int getQuantity() {
+        return quantity;
     }
+    
+    
+    
 }

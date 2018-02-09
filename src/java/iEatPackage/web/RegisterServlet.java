@@ -46,14 +46,14 @@ public class RegisterServlet extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             String email = request.getParameter("username");
             String password = request.getParameter("password");
-            
-            try {
-                userDao.createUser(email, password);
+             String usertype =  "Basic" ;
+           
+            try { 
+                userDao.createUser(email, password, usertype);
                 RequestDispatcher view = request.getRequestDispatcher("registrationsuccess.jsp");
                 view.forward(request, response);
             } catch (Exception e) {
-                request.setAttribute("errormessage", e.getMessage());
-                //request.setAttribute("userslist", userslist);
+                request.setAttribute("errormessage", e.getMessage()); 
                 RequestDispatcher view = request.getRequestDispatcher("register.jsp");
                 view.forward(request, response);
             } 

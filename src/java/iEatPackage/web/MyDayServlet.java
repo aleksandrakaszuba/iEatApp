@@ -6,12 +6,17 @@ package iEatPackage.web;
  * and open the template in the editor.
  */
 import iEatPackage.model.CaloriesCalculator;
+import iEatPackage.model.ConsumedFood;
+import iEatPackage.model.Meal;
 import iEatPackage.model.QuantifiedFood;
+import iEatPackage.model.User;
 import iEatPackage.model.UserDao;
 import iEatPackage.model.UserDaoInMemoryImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -42,24 +47,79 @@ public class MyDayServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
+
             HttpSession session = request.getSession(false);
             if (session != null) {
-                iEatPackage.model.User user = (iEatPackage.model.User) session.getAttribute("user");
+                User user = (User) session.getAttribute("user");
                 if (user == null) {
-                    // ToDo
                     response.sendRedirect("login.jsp");
-                } else {
-                    List<QuantifiedFood> listOfConsumedFood = userDao.getFoodByDate(user, LocalDate.now());
+                }
 
-                    request.setAttribute("dailyCaloriesAllowance", c.calculateCaloriesPerDay(user));
-                    request.setAttribute("listOfConsumedFood", listOfConsumedFood);
-                    RequestDispatcher view = request.getRequestDispatcher("myday.jsp");
+                if (user != null & (user.getUsertype().equals(("Admin").toLowerCase()))) {
+                    RequestDispatcher view = request.getRequestDispatcher("ListAllFoodServlet.do");
                     view.forward(request, response);
+                }
+                if (user != null & !userDao.userDataCompleted(user) & (user.getUsertype().equals(("Basic").toLowerCase()))) {
+                  
+                    RequestDispatcher view = request.getRequestDispatcher("userdataform.jsp");
+                    view.forward(request, response);
+                } else {
+                    // user completed the form and calories allowance was calculated
+                    LocalDate currentDate = LocalDate.now();
+
+                    int caloriesTotal = 0;
+                    int proteinsTotal = 0;
+                    int fatsTotal = 0;
+                    int carbsTotal = 0;
+
+
+                     List<ConsumedFood> listOfConsumedFood = userDao.getFoodByDate(user, currentDate);
+                    if (listOfConsumedFood.size() > 0) {
+                        for (QuantifiedFood f : listOfConsumedFood) {
+                            caloriesTotal += f.getFood().getCalories() * (f.getQuantity());
+                            carbsTotal += f.getFood().getCarbs() * (f.getQuantity());
+                            proteinsTotal += f.getFood().getProteins() * (f.getQuantity());
+                            fatsTotal += f.getFood().getFats() * (f.getQuantity());
+                        }
+                        request.setAttribute("listOfConsumedFood", listOfConsumedFood);
+                    } 
+                    int daysOfHistory = 7;
+                    int caloriesList[] = new int[daysOfHistory];
+                    for (int i = 0; i < 7; i++) {
+                        caloriesList[i] = userDao.getConsumedCaloriesByDate(user, currentDate.minusDays(i));
+
+                    }
+           
+                  
+
+                    List<Meal> listOfAllConsumedMeals = userDao.getUserConsumedMeals(user, currentDate);
+                    if (listOfAllConsumedMeals.size() > 0) {
+                        for (Meal m : listOfAllConsumedMeals) {
+                            carbsTotal += m.getCarbs();
+                            proteinsTotal += m.getProteins();
+                            fatsTotal += m.getFats();
+                            caloriesTotal += m.getCalories();
+                        }
+                        request.setAttribute("listOfAllConsumedMeals", listOfAllConsumedMeals);
+                    }
+                    request.setAttribute("dailyCaloriesAllowance", c.calculateCaloriesPerDay(user));
+                    request.setAttribute("caloriesTotal", caloriesTotal);
+                    request.setAttribute("carbsTotal", carbsTotal);
+                    request.setAttribute("proteinsTotal", proteinsTotal);
+                    request.setAttribute("fatsTotal", fatsTotal);
+                    request.setAttribute("statDate", currentDate);
+                    
+                    
+                    
+                      request.setAttribute("caloriesList", caloriesList);
+                    RequestDispatcher view = request.getRequestDispatcher("myday.jsp");
+                   view.forward(request, response);
                 }
             } else {
                 response.sendRedirect("login.jsp");
             }
+
+            /* TODO output your page here. You may use following sample code. */
         }
     }
 

@@ -6,49 +6,51 @@
 package iEatPackage.model;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
  * @author Ola
  */
-
-   public interface UserDao {
-      
-   //creates a new user  
-   //public void registerUser(String email, String password);
-   //check if user exists, yes:sets up the session for the user, no: promopt: change pass, create an account
-   //public void loginUser(String email, String password);
-   //if user's session=true allow user to update/register advanced information
-   //public void userAdvancedDataUpdate();
-   //if user's session=true allow user to change email/password information
-   //public void userBasicDataUpdate();
-   //retieves data of the user from db
-   public User getUser(String email);
-   public void createUser(String email, String password) throws Exception;
-   
-   //if advanced data not null 
-   public int calculateDailyIntake();
-   
-
-//food related
-   //for Admin extention
-   public void createFood(Food food);
-   public void updateFood(String name, Food food);
-   public Meal createMeal(User user, QuantifiedFood qfood);
+public interface UserDao {
 
    
-   public List<QuantifiedFood> getFoodByDate(User user, LocalDate data);
-   public List<Food> getFoodByName(String name);
-   
-    public List<Food> getAllFoods();
-    
-    public void consume(User user, String foodName, int quantity, LocalDate date);
-   
-  // public void deleteMeal();
-  // public Meal updateMeal();
-     //public void deleteFood();
-  // public Food updateFood();
-   
-}
+    public User getUser(String email);
+
+    public boolean userDataCompleted(User user);
+
+    public void createUser(String email, String password, String usertype) throws Exception;
  
+    public void createFood(Food food);
+
+    public void updateFood(String name, Food food);
+
+    public void createMeal(User user, Meal meal);
+
+    public void consumeMeal(User user, Meal meal, LocalDate date);
+
+    public List<Meal> getUserDefinedMeals(User user);
+
+    public List<Meal> getUserDefinedMealsByName(User user, String name);
+
+    public List<Meal> getUserConsumedMeals(User user, LocalDate date);
+
+    public List<ConsumedFood> getFoodByDate(User user, LocalDate data);
+
+    public List<Food> getFoodByName(String name);
+
+    public List<Food> getAllFoods();
+
+    public void consume(User user, String foodName, int quantity, LocalDate date);
+
+    public double calculateDailyIntake(User user);
+
+    public String validate(String s);
+
+    public Food getFoodByExactName(String name);
+
+    public int getConsumedCaloriesByDate(User user, LocalDate date);
+  
+}

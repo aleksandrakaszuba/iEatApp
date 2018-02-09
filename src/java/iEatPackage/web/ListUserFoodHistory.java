@@ -6,7 +6,8 @@
 package iEatPackage.web;
 
 import iEatPackage.model.Food;
-import iEatPackage.model.QuantifiedFood;
+import iEatPackage.model.ConsumedFood;
+import iEatPackage.model.Meal;
 import iEatPackage.model.User;
 import iEatPackage.model.UserDao;
 import iEatPackage.model.UserDaoInMemoryImpl;
@@ -50,16 +51,16 @@ public class ListUserFoodHistory extends HttpServlet {
                     // ToDo
                     response.sendRedirect("login.jsp");
                 } else {
-                   List<QuantifiedFood> listOfConsumedFood = userDao.getFoodByDate(user, LocalDate.now());
-                     request.setAttribute("listOfConsumedFood", listOfConsumedFood);
-                    RequestDispatcher view = request.getRequestDispatcher("daylog.jsp");
-              
-                    view.forward(request, response);
+                   List<ConsumedFood> listOfConsumedFood = userDao.getFoodByDate(user, LocalDate.now());
+                   List<Meal> listOfAllConsumedMeals = userDao.getUserConsumedMeals(user, LocalDate.now());
+                   request.setAttribute("listOfAllConsumedMeals", listOfAllConsumedMeals);
+                   request.setAttribute("listOfConsumedFood", listOfConsumedFood);  
+                   RequestDispatcher view = request.getRequestDispatcher("daylog.jsp");
+                   view.forward(request, response);
                 }
             } else {
                 response.sendRedirect("login.jsp");
             }
-
         }
     }
 

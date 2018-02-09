@@ -3,9 +3,14 @@
     Created on : 21-Mar-2017, 2:11:39 PM
     Author     : Ola
 --%>
+<%@page import="iEatPackage.model.User"%>
 <%@page import="java.util.List"%>
 <%@page import="iEatPackage.model.Food"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+  <%
+        User user = (User) session.getAttribute("user");
+      
+    %>
 <!DOCTYPE html>
 <html>
     <jsp:include page="/template_parts/head.jsp" />
@@ -13,37 +18,64 @@
 </head>
 <a href="LoginServlet.do"></a>
 <body>
-    <jsp:include page="/template_parts/menu.jsp" />
+      <%
+            if (user.getUsertype().equals(("admin").toLowerCase())) {  %>
+        <jsp:include page="/template_parts/menu_admin.jsp" />
+        <%
+        } else {
+        %>    
+        <jsp:include page="/template_parts/menu.jsp" />
+        <% } %>
     <div class="container">
-        <jsp:include page="/template_parts/dash_nav.jsp" />
-
         <nav class="navbar navbar-default">
             <ul class="nav navbar-nav">
                 <li><a href="ListAllFoodServlet.do" ><i class="fa fa-search"></i> Search Food</a></li>
-                <li><a href="MealsServlet.do"  >  Meals</a></li>
             </ul>
         </nav>
-        <a  type="button" class="btn btn-primary btn-large" data-toggle="modal" data-target="#newfood">Add Food</a>
+        <div><a  type="button" class="btn btn-primary btn-large pull-right" data-toggle="modal" data-target="#newfood"> + Create New Food</a></div>
+         <div class="col-xs-12"style="margin-top:20px">
+                <%
+                    String alertclass;
+                    Object errormessage = (String) request.getAttribute("errormessage");
+                    Object successmessage = (String) request.getAttribute("successmessage");
+                    if (errormessage != null) {
+                        alertclass = "has-error";
+                        out.println(" <div class='alert alert-danger' ><p class=''>" + errormessage + "</p></div>");
+
+                    }
+                    if (successmessage != null) {
+                        alertclass = "alert alert-success";
+                        out.println("<div class='alert alert-success fade in alert-dismissable'><p class=''>" + successmessage + "</p>");
+
+                    } else {
+                        alertclass = "";
+                    }
+                %>
+            </div>
+        
         <div class="modal fade" id="newfood" tabindex="-1" role="dialog">
             <form action="ManageFoodServlet.do"> 
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>     
-                            <p> Food Name: <input  class="" type="text"  name="foodName"></p>
+                            <p> Food Name: <input  class="" type="text"  name="foodName" required pattern="^[^-\s][a-z A-Z 0-9]{1,20}" title="Min 1, max 20 characters"></p>
                         </div>
                         <div class="modal-body">
-                            <input class="hidden" name="id" >
-                            <p>Calories: <input type="text" name="calories" > kcal </p>
-                            <p>Serving: <input type="text" name="serving" ></p>
-                            <p>Fats: <input type="text" name="fats" >g </p>
-                            <p>Carbohydrates: <input type="text" name="carbs"> g </p>
-                            <p>Proteins: <input type="text" name="proteins">g </p>
+                            <input class="hidden" name="id" value="0" required>
+                                   <input  class="hidden" type="text"  name="modify" value="false">
+                                      <input  class="hidden" type="text"  name="create" value="true">
+                            <p>Calories: <input type="text" name="calories"  required  pattern="^[^-\s\.][0-9\.]{1,6}" title="Decimal number, max 6 characters, no space"> kcal </p>
+                            <p>Serving: <input type="text" name="serving"   required pattern="^[^-\s0][a-z A-Z 0-9]{1,20}" title="Min 1, max 20 characters"></p>
+                             
+                            <p>Fats: <input type="text" name="fats" required pattern="^[^-\s\.][0-9\.]{1,6}" title="Decimal number, max 6 characters, no space">g </p>
+                            <p>Carbohydrates: <input type="text" name="carbs"  required pattern="^[^-\s\.][0-9\.]{1,6}" title="Decimal number, max 6 characters, no space"> g </p>
+                            <p>Proteins: <input type="text" name="proteins"  required pattern="^[^-\s\.][0-9\.]{1,6}" title="Decimal number, max 6 characters, no space">g </p>
                         </div>
                     </div><!-- /.modal-content -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <input type="submit" class="btn btn-primary" value="Add">
+                        <input type="submit" class="btn btn-primary" value="Save">
                     </div>
                 </div><!-- /.modal-dialog -->
             </form>
@@ -82,21 +114,24 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <h4><%=f.getName()%> </h4>
                                 <input  class="hidden" type="text"  name="foodName" value="<%=f.getName()%>">
-                                <input type="text"  name="newfoodName" value="<%=f.getName()%>">
+                                      <input  class="hidden" type="text"  name="modify" value="true">
+                                      <input  class="hidden" type="text"  name="create" value="false">
+                                    
+                              <!--  <input type="text"  name="newFoodName" value="<%=f.getName()%>" required pattern="^[^-\s].*">-->
 
                             </div>
                             <div class="modal-body">
                                 <input class="hidden" name="id" value="<%=f.getId()%>">
-                                <p>Calories: <input type="text" id="<%=f.getId()%>caloriesfield"name="calories"  value="<%=f.getCalories()%>"> kcal </p>
-                                <p>Serving: <input type="text" id="<%=f.getId()%>servingfield" name="serving" value="<%=f.getServingSize()%>" ></p>
-                                <p>Fats: <input type="text" id="<%=f.getId()%>fatsfield" name="fats" value="<%=f.getFats()%>" >g </p>
-                                <p>Carbohydrates: <input type="text" id="<%=f.getId()%>carbsfield" name="carbs" value="<%=f.getCarbs()%>"> g </p>
-                                <p>Proteins: <input type="text" id="<%=f.getId()%>proteinsfield" name="proteins" value="<%=f.getProteins()%>">g </p>
+                                <p>Calories: <input type="text" id="<%=f.getId()%>caloriesfield"name="calories"  value="<%=f.getCalories()%>" required pattern="^[^-\s\.0][0-9\.]{1,6}" title="Decimal number, max 6 characters, no space"> kcal </p>
+                                <p>Serving: <input type="text" id="<%=f.getId()%>servingfield" name="serving" value="<%=f.getServingSize()%>" required pattern="^[^-\s\.0][a-z A-Z 0-9]{1,20}" title="Min 1, max 20 characters"></p>
+                                <p>Fats: <input type="text" id="<%=f.getId()%>fatsfield" name="fats" value="<%=f.getFats()%>" required pattern="^[^-\s\.][0-9\.]{1,6}" title="Decimal number, max 6 characters, no space">g </p>
+                                <p>Carbohydrates: <input type="text" id="<%=f.getId()%>carbsfield" name="carbs" value="<%=f.getCarbs()%>"required pattern="^[^-\s\.][0-9\.]{1,6}" title="Decimal number, max 6 characters, no space"> g </p>
+                                <p>Proteins: <input type="text" id="<%=f.getId()%>proteinsfield" name="proteins" value="<%=f.getProteins()%>"required pattern="^[^-\s\.][0-9\.]{1,6}" title="Decimal number, max 6 characters, no space">g </p>
                             </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <input type="submit" class="btn btn-primary" value="Add">
+                        <input type="submit" class="btn btn-primary" value="Save">
                     </div>
 
                     </form>

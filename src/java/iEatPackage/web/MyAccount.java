@@ -56,7 +56,7 @@ public class MyAccount extends HttpServlet {
                     user.setPlan(Integer.parseInt(validate(request.getParameter("weightlostspeed"))));
                 }
                 request.setAttribute("dailyCaloriesAllowance", c.calculateCaloriesPerDay(user));
-                RequestDispatcher view = request.getRequestDispatcher("myday.jsp");
+                RequestDispatcher view = request.getRequestDispatcher("MyDayServlet.do");
                 view.forward(request,response);
             } else { 
                 response.sendRedirect("login.jsp");

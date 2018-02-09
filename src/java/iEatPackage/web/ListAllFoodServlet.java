@@ -50,25 +50,20 @@ public class ListAllFoodServlet extends HttpServlet {
                     // ToDo
                     response.sendRedirect("login.jsp");
                 } else {
-                    if(user.getUsertype().toLowerCase().equals(("Admin").toLowerCase())){
+                   
+                    if(user.getUsertype().equals(("admin")  )){
                      request.setAttribute("listOfAllFood", listOfAllFood);
                     RequestDispatcher view = request.getRequestDispatcher("managefood.jsp");
                     view.forward(request, response);
-                    
                     }else{
                      request.setAttribute("listOfAllFood", listOfAllFood);
                     RequestDispatcher view = request.getRequestDispatcher("foodlist.jsp");
                     view.forward(request, response);
-                    
                     }
-                    
-                   
                 }
             } else {
                 response.sendRedirect("login.jsp");
-            }
-            
-                
+            }   
         }
        
     }

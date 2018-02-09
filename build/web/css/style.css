@@ -1,13 +1,38 @@
 body{
     margin:0;
-   padding:0;background: #f8f8f8;
-     height:100%;
-background: #fff;
+    padding:0;background: #f8f8f8;
+    height:100%;
+    background: #fff;
 }
 #top-nav li{
-    
+
     border-left:1px solid #eeeeee; 
-    
+
+}
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.alert-success {
+    background-color: rgba(178, 224, 180, 0.31);
+    border-color: #509d44;
+    color: #115a14;
+}
+.text-bold{font-weight: 500;}
+#home{
+    background: url('../images/fruit-fig-sweet-jam.jpg') 23% 8%; 
+    overflow:auto;
+}
+.lead{
+    line-heigh:1 
+}
+.bullet{
+    padding-left:20px;
+}
+.bullet i{
+    padding-right: 4px;
+    display: inline-block;
 }
 #footer{
     background: #eeeeee;
@@ -17,4 +42,22 @@ background: #fff;
 }
 .navbar-default{
     background: #f8f8f8;
+    border-radius: 0;
+}
+
+.meal_ingredients_table div{
+    border-bottom: 1px solid #ddd;
+    overflow: auto;
+
+}
+.meal_ingredients_table div span  {
+    width: 25%;
+    display: inline-block;
+}
+.meal_ingredients_table div span:first-child {
+    width: 50%;
+    display: inline-block;
+}
+.text-shadow{
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
 }

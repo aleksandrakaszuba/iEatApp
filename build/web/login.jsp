@@ -4,20 +4,24 @@
     Author     : Ola
 --%>
 
-
+<%@page import="iEatPackage.model.User"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    
+%>
 <!DOCTYPE html>
 <html>
-    <jsp:include page="/template_parts/head.jsp" />
-    <title>Login</title>
-</head>
-<a href="LoginServlet.do"></a>
-<body>
-    <jsp:include page="/template_parts/menu.jsp" />
+    <head>
+        <jsp:include page="/template_parts/head.jsp" />
+        <title>Login</title>
+    </head>
+    <body>
+             <jsp:include page="/template_parts/menu_general.jsp" />
     <div class="container">
+    
         <div class="col-xs-12 col-md-6 col-md-offset-3">
 
-            <p>New to iEat? <a href="#register">Register here</a> and start making and meeting your goals!</p>
+            <p>New to iEat? <a href="register.jsp">Register here</a> and start making and meeting your goals!</p>
            
             <form action="LoginServlet.do" class="form-login" class="text-left">
                  <h1 class="h2">Log in</h1>
@@ -40,7 +44,7 @@
                 </div>
                 <div class="form-group <%= errorclass %>">
                     <label class="control-label" for="password" class="text-left" >Password</label>
-                    <input type="text"  id="password"  name="password" class="form-control"     >
+                    <input type="text"  id="password" placeholder="Password"  name="password" class="form-control"     >
                 </div>
                 <br>
                 <input class="btn btn-lg btn-primary  " type="submit" value="Login">

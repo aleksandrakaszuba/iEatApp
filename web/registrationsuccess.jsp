@@ -11,9 +11,13 @@
     <title>Congratulations</title>
 </head>
 <body>
-    <jsp:include page="/template_parts/menu.jsp" />
-
-    <div class="col-xs-12 col-md-6 col-md-offset-3">
-        <p>You have successfully registered. Please <a href="login.jsp">login here</a></p>
+    <jsp:include page="/template_parts/menu_general.jsp" />
+    <div class="container" style="min-height: 400px">
+         <div class="col-xs-12 col-md-6 col-md-offset-3">
+            <h2>Congratulations!</h2>
+            <p class="lead">You have successfully registered. </p>
+            <p  class="lead">Please <a href="login.jsp">login here</a></p>
+        </div>
     </div>
+    </body>
     <jsp:include page="/template_parts/footer.jsp" />

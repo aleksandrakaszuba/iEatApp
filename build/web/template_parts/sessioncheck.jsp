@@ -4,16 +4,20 @@
     Author     : Ola
 --%>
 
+<%@page import="iEatPackage.model.User"%>
 <%
-    /* if ((session.getAttribute("email") == null) || (session.getAttribute("email") == "")) {
+    if (session == null) {
+        // the user *does not* have a valid session; 
         response.sendRedirect("login.jsp");
-    } else if ((session.getAttribute("email") != null) || (session.getAttribute("profile") == "incomplete")) {
-        response.sendRedirect("userdataform.jsp");
-    }*/
-    
-    User user = (User)session.getAttribute("user");
+    } else {
+        //session exists
+        User user = (User) session.getAttribute("user");
+        if (user.getUsertype().equals(("admin").toLowerCase())) {
+            out.println("<p> Admin </p>");
+        }
+        out.println("<p> session time atr:" + session.getCreationTime() + "</p>");
+        out.println("<p>session all atr:" + session.getAttributeNames() + "</p>");
+        out.println("<p>session email atr:" + user.getName() + "</p>");
+    }
 
-    out.println("<p> session time atr:" + session.getCreationTime() + "</p>");
-    out.println("<p>session all atr:" + session.getAttributeNames() + "</p>");
-    out.println("<p>session email atr:" + user.getName() + "</p>"); 
 %>
